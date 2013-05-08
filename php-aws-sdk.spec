@@ -4,13 +4,16 @@
 
 Name:		php-aws-sdk
 Version:	1.6.2
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Amazon Web Services framework for PHP
 
-#The entire source code is ASL 2.0 except lib/cachecore/, lib/requestcore/, lib/yaml/ which are BSD and lib/dom/ which is MIT
+#The entire source code is ASL 2.0 except lib/cachecore/ and lib/requestcore/ which are BSD and lib/dom/ which is MIT
 License:	ASL 2.0 and BSD and MIT
 URL:		http://aws.amazon.com/sdkforphp/
 Source0:	http://pear.amazonwebservices.com/get/sdk-%{version}.tgz
+
+# integration patches
+Patch10:	%{name}-unbundle-sfyaml.diff
 
 BuildArch:	noarch
 BuildRequires:	php-pear(PEAR)
@@ -22,13 +25,23 @@ Requires(postun):	%{__pear}
 Requires:	php-common >= 5.2
 Requires:	php-pear(PEAR)
 Requires:	php-channel(%{channelname})
-Requires:	php-xml
-Requires:	php-mbstring
 Requires:	php-pdo
-Requires:	php-pecl-apc
-Requires:	php-pecl-memcache
-Requires:	php-pecl-memcached
-Requires:	php-xcache
+Requires:	php-reflection
+Requires:	php-spl
+Requires:	php-simplexml
+Requires:	php-ctype
+Requires:	php-curl
+Requires:	php-date
+Requires:	php-dom
+Requires:	php-hash
+Requires:	php-json
+Requires:	php-libxml
+Requires:	php-mbstring
+Requires:	php-openssl
+Requires:	php-pcre
+Requires:	php-session
+Requires:	php-sqlite3
+Requires:	php-pear(pear.symfony-project.com/YAML)
 
 Provides:	php-pear(%{pear_name}) = %{version}
 Provides:	php-pear(%{channelname}/%{pear_name}) = %{version}
@@ -42,7 +55,24 @@ Amazon Simple Storage Service (Amazon S3), Amazon Elastic Compute Cloud
 %prep
 %setup -q -c
 [ -f package2.xml ] || mv package.xml package2.xml
-mv package2.xml %{pear_name}-%{version}/%{name}.xml
+
+# fix doc roles
+sed -e '/_samples/s/role="php"/role="doc"/' \
+	-e '/lib\/yaml/d' \
+	-e '/sdk.class.php/s/md5sum="[0-9,a-z]\{32\}"//' \
+	-e '/_docs/s/role="php"/role="doc"/' \
+	-e '/_compatibility_test/s/role="php"/role="doc"/' \
+	-e '/_sql/s/role="php"/role="doc"/' \
+	-e '/LICENSE/s/role="php"/role="doc"/' \
+	-e '/README/s/role="php"/role="doc"/' \
+	package2.xml >%{pear_name}-%{version}/%{name}.xml
+
+
+cd %{pear_name}-%{version}
+# unbundle
+rm -rf lib/yaml
+
+%patch10
 
 
 %build
@@ -64,11 +94,6 @@ rm -rf $RPM_BUILD_ROOT%{pear_metadir}/.??*
 mkdir -p $RPM_BUILD_ROOT%{pear_xmldir}
 install -pm 644 %{name}.xml $RPM_BUILD_ROOT%{pear_xmldir}
 
- 
-mv $RPM_BUILD_ROOT%{pear_phpdir}/AWSSDKforPHP/_samples $RPM_BUILD_ROOT%{pear_docdir}/%{pear_name}/
-mv $RPM_BUILD_ROOT%{pear_phpdir}/AWSSDKforPHP/_compatibility_test $RPM_BUILD_ROOT%{pear_docdir}/%{pear_name}/
-mv $RPM_BUILD_ROOT%{pear_phpdir}/AWSSDKforPHP/_docs/* $RPM_BUILD_ROOT%{pear_docdir}/%{pear_name}/_docs/
-rm -rf $RPM_BUILD_ROOT%{pear_phpdir}/AWSSDKforPHP/_docs/
 
 %post
 %{__pear} install --nodeps --soft --force --register-only \
@@ -88,6 +113,10 @@ fi
 
 
 %changelog
+* Wed May 08 2013 Gregor Tätzner <brummbq@fedoraproject.org> - 1.6.2-5
+- unbundle sfyaml
+- fix requires
+- mark doc in package.xml
 * Wed May 01 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 1.6.2-4
 - Add dependencies
 - Add license clarification

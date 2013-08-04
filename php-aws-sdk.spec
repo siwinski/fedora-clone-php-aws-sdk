@@ -4,7 +4,7 @@
 
 Name:		php-aws-sdk
 Version:	1.6.2
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Amazon Web Services framework for PHP
 
 #The entire source code is ASL 2.0 except lib/cachecore/ and lib/requestcore/ which are BSD and lib/dom/ which is MIT
@@ -113,6 +113,9 @@ fi
 
 
 %changelog
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6.2-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Wed May 08 2013 Gregor Tätzner <brummbq@fedoraproject.org> - 1.6.2-5
 - unbundle sfyaml
 - fix requires

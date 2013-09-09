@@ -3,17 +3,13 @@
 %global channelname pear.amazonwebservices.com
 
 Name:		php-aws-sdk
-Version:	1.6.2
-Release:	6%{?dist}
+Version:	2.4.5
+Release:	2%{?dist}
 Summary:	Amazon Web Services framework for PHP
 
-#The entire source code is ASL 2.0 except lib/cachecore/ and lib/requestcore/ which are BSD and lib/dom/ which is MIT
-License:	ASL 2.0 and BSD and MIT
+License:	ASL 2.0
 URL:		http://aws.amazon.com/sdkforphp/
 Source0:	http://pear.amazonwebservices.com/get/sdk-%{version}.tgz
-
-# integration patches
-Patch10:	%{name}-unbundle-sfyaml.diff
 
 BuildArch:	noarch
 BuildRequires:	php-pear(PEAR)
@@ -42,7 +38,7 @@ Requires:	php-pcre
 Requires:	php-session
 Requires:	php-sqlite3
 Requires:	php-pear(pear.symfony-project.com/YAML)
-
+Requires:	php-guzzle-Guzzle
 Provides:	php-pear(%{pear_name}) = %{version}
 Provides:	php-pear(%{channelname}/%{pear_name}) = %{version}
 
@@ -51,35 +47,27 @@ Amazon Web Services SDK for PHP enables developers to build solutions for
 Amazon Simple Storage Service (Amazon S3), Amazon Elastic Compute Cloud 
 (Amazon EC2), Amazon SimpleDB, and more.
 
-
 %prep
 %setup -q -c
 [ -f package2.xml ] || mv package.xml package2.xml
 
 # fix doc roles
 sed -e '/_samples/s/role="php"/role="doc"/' \
-	-e '/lib\/yaml/d' \
-	-e '/sdk.class.php/s/md5sum="[0-9,a-z]\{32\}"//' \
-	-e '/_docs/s/role="php"/role="doc"/' \
-	-e '/_compatibility_test/s/role="php"/role="doc"/' \
-	-e '/_sql/s/role="php"/role="doc"/' \
-	-e '/LICENSE/s/role="php"/role="doc"/' \
-	-e '/README/s/role="php"/role="doc"/' \
-	package2.xml >%{pear_name}-%{version}/%{name}.xml
+        -e '/sdk.class.php/s/md5sum="[0-9,a-z]\{32\}"//' \
+        -e '/_docs/s/role="php"/role="doc"/' \
+        -e '/_compatibility_test/s/role="php"/role="doc"/' \
+        -e '/_sql/s/role="php"/role="doc"/' \
+        -e '/LICENSE/s/role="php"/role="doc"/' \
+        -e '/README/s/role="php"/role="doc"/' \
+        package2.xml >%{pear_name}-%{version}/%{name}.xml
 
-
-cd %{pear_name}-%{version}
-# unbundle
-rm -rf lib/yaml
-
-%patch10
-
-
+#remove aws.phar
+rm %{pear_name}-%{version}/aws.phar
 %build
 # Empty build section, most likely nothing required.
 
-
 %install
+
 cd %{pear_name}-%{version}
 %{__pear} install --nodeps --packagingroot $RPM_BUILD_ROOT %{name}.xml
 
@@ -107,15 +95,18 @@ fi
 
 
 %files
-%doc %{pear_docdir}/%{pear_name}
 %{pear_xmldir}/%{name}.xml
 %{pear_phpdir}/AWSSDKforPHP/
 
 
 %changelog
+* Mon Sep 09 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 2.4.5-2
+- add guzzle dependency.
+- remove aws.phar file
+* Thu Sep 05 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 2.4.5-1
+- Update to 2.4.5
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6.2-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
-
 * Wed May 08 2013 Gregor Tätzner <brummbq@fedoraproject.org> - 1.6.2-5
 - unbundle sfyaml
 - fix requires

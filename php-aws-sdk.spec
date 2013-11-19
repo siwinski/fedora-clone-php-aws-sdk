@@ -3,8 +3,8 @@
 %global channelname pear.amazonwebservices.com
 
 Name:		php-aws-sdk
-Version:	2.4.5
-Release:	2%{?dist}
+Version:	2.4.10
+Release:	1%{?dist}
 Summary:	Amazon Web Services framework for PHP
 
 License:	ASL 2.0
@@ -37,8 +37,10 @@ Requires:	php-openssl
 Requires:	php-pcre
 Requires:	php-session
 Requires:	php-sqlite3
-Requires:	php-pear(pear.symfony-project.com/YAML)
-Requires:	php-guzzle-Guzzle
+Requires:	php-Monolog
+Requires:	php-symfony2-Yaml
+Requires:	php-guzzle-Guzzle >= 3.7.0
+Requires:	php-guzzle-Guzzle < 3.8
 Provides:	php-pear(%{pear_name}) = %{version}
 Provides:	php-pear(%{channelname}/%{pear_name}) = %{version}
 
@@ -100,6 +102,11 @@ fi
 
 
 %changelog
+* Mon Nov 18 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 2.4.10-1
+- update to latest upstream version
+- add php-symfony2-Yaml(version2) and php-Monolog
+- remove dependency php-symfony2-YAML(version1)
+- set version contraint for php-guzzle-Guzzle dependency
 * Mon Sep 09 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 2.4.5-2
 - add guzzle dependency.
 - remove aws.phar file

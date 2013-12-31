@@ -38,9 +38,10 @@ Requires:	php-pcre
 Requires:	php-session
 Requires:	php-sqlite3
 Requires:	php-Monolog
-Requires:	php-symfony2-Yaml
+Requires:       php-Monolog-dynamo
+Requires:	php-symfony-yaml
 Requires:	php-guzzle-Guzzle >= 3.7.0
-Requires:	php-guzzle-Guzzle < 3.8
+Requires:	php-guzzle-Guzzle < 3.9.0
 Provides:	php-pear(%{pear_name}) = %{version}
 Provides:	php-pear(%{channelname}/%{pear_name}) = %{version}
 

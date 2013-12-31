@@ -4,7 +4,7 @@
 
 Name:		php-aws-sdk
 Version:	2.5.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Amazon Web Services framework for PHP
 
 License:	ASL 2.0
@@ -103,6 +103,10 @@ fi
 
 
 %changelog
+* Mon Dec 30 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.0-2
+- add php-Monolog-dynamo dependency
+- update naming on dependency php-symfony-yaml
+- fix max version require on guzzle dependency
 * Sun Dec 29 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.0-1
 - update to latest upstrean version
 * Mon Nov 18 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 2.4.10-1

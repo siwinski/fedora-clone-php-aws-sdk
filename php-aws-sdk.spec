@@ -3,8 +3,8 @@
 %global channelname pear.amazonwebservices.com
 
 Name:		php-aws-sdk
-Version:	2.5.0
-Release:	2%{?dist}
+Version:	2.4.12
+Release:	1%{?dist}
 Summary:	Amazon Web Services framework for PHP
 
 License:	ASL 2.0
@@ -103,6 +103,8 @@ fi
 
 
 %changelog
+* Thu Jan 02 2014 Joseph Marrero <jmarrero@fedoraproject.org> - 2.4.12-1
+- downgrade to latest 2.4.x upstream release while getting 2.5.0 fixed
 * Mon Dec 30 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.0-2
 - add php-Monolog-dynamo dependency
 - update naming on dependency php-symfony-yaml

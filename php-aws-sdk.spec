@@ -6,16 +6,19 @@
 Name:           php-aws-sdk
 Version:        2.5.0
 Release:        3%{?dist}
-Summary:        Official PHP SDK for Amazon Web Services
+Summary:        Amazon Web Services framework for PHP
 
-Group:          Development/Libraries
-License:        Apache 2.0
-URL:            http://pear.amazonwebservices.com/package/sdk
+License:        ASL 2.0
+URL:            http://aws.amazon.com/sdkforphp
 Source0:        http://pear.amazonwebservices.com/get/%{pear_name}-%{version}.tgz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  php-pear(PEAR)
+BuildRequires:  php-channel(%{channelname})
+
+Requires(post):  %{__pear}
+Requires(postun): %{__pear}
 
 Requires:	php-common >= 5.2
 Requires:	php-pear(PEAR)
@@ -44,19 +47,26 @@ Requires:	php-guzzle-Guzzle < 3.9.0
 Provides:	php-pear(%{pear_name}) = %{version}
 Provides:	php-pear(%{channelname}/%{pear_name}) = %{version}
 
-
 %description
-The AWS SDK for PHP enables PHP developers to easily work with Amazon Web
-Services and build scalable solutions with Amazon S3, Amazon DynamoDB,
-Amazon Glacier, and more.
+Amazon Web Services SDK for PHP enables developers to build solutions for
+Amazon Simple Storage Service (Amazon S3), Amazon Elastic Compute Cloud
+(Amazon EC2), Amazon SimpleDB, and more.
 
 %prep
 %setup -q -c
 [ -f package2.xml ] || mv package.xml package2.xml
-mv package2.xml %{pear_name}-%{version}/%{name}.xml
 
-cd %{pear_name}-%{version}
+sed -e '/_samples/s/role="php"/role="doc"/' \
+       	-e '/sdk.class.php/s/md5sum="[0-9,a-z]\{32\}"//' \
+        -e '/_docs/s/role="php"/role="doc"/' \
+       	-e '/_compatibility_test/s/role="php"/role="doc"/' \
+       	-e '/_sql/s/role="php"/role="doc"/' \
+       	-e '/LICENSE/s/role="php"/role="doc"/' \
+        -e '/README/s/role="php"/role="doc"/' \
+       	package2.xml >%{pear_name}-%{version}/%{name}.xml
 
+#remove aws.phar
+rm %{pear_name}-%{version}/aws.phar
 
 %build
 cd %{pear_name}-%{version}
@@ -87,14 +97,12 @@ rm -rf $RPM_BUILD_ROOT
 %postun
 if [ $1 -eq 0 ] ; then
     %{__pear} uninstall --nodeps --ignore-errors --register-only \
-        pear.amazonwebservices.com/%{pear_name} >/dev/null || :
+        %{channelname}%{pear_name} >/dev/null || :
 fi
 
 
 %files
 %{pear_xmldir}/%{name}.xml
-# Expand this as needed to avoid owning dirs owned by our dependencies
-# and to avoid unowned dirs
 %{pear_phpdir}/AWSSDKforPHP/
 
 %changelog

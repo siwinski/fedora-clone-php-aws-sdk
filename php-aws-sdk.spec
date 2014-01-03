@@ -5,7 +5,7 @@
 
 Name:           php-aws-sdk
 Version:        2.5.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Amazon Web Services framework for PHP
 
 License:        ASL 2.0
@@ -66,7 +66,7 @@ sed -e '/_samples/s/role="php"/role="doc"/' \
        	package2.xml >%{pear_name}-%{version}/%{name}.xml
 
 #remove aws.phar
-rm %{pear_name}-%{version}/aws.phar
+#rm %{pear_name}-%{version}/aws.phar
 
 %build
 cd %{pear_name}-%{version}
@@ -106,6 +106,8 @@ fi
 %{pear_phpdir}/AWSSDKforPHP/
 
 %changelog
+* Fri Jan 03 2014 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.0-4
+- keep the aws.phar file for workaround on install
 * Thu Jan 02 2014 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.0-3
 - Fix file installation
 * Mon Dec 30 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.0-2

@@ -1,22 +1,21 @@
+%{!?pear_metadir: %global pear_metadir %{pear_phpdir}}
 %{!?__pear: %{expand: %%global __pear %{_bindir}/pear}}
 %global pear_name %(echo %{name} | sed -e 's/^php-aws-//' -e 's/-/_/g')
 %global channelname pear.amazonwebservices.com
 
-Name:		php-aws-sdk
-Version:	2.4.12
-Release:	1%{?dist}
-Summary:	Amazon Web Services framework for PHP
+Name:           php-aws-sdk
+Version:        2.5.0
+Release:        3%{?dist}
+Summary:        Official PHP SDK for Amazon Web Services
 
-License:	ASL 2.0
-URL:		http://aws.amazon.com/sdkforphp/
-Source0:	http://pear.amazonwebservices.com/get/sdk-%{version}.tgz
+Group:          Development/Libraries
+License:        Apache 2.0
+URL:            http://pear.amazonwebservices.com/package/sdk
+Source0:        http://pear.amazonwebservices.com/get/%{pear_name}-%{version}.tgz
 
-BuildArch:	noarch
-BuildRequires:	php-pear(PEAR)
-BuildRequires:	php-channel(%{channelname})
-
-Requires(post):		%{__pear}
-Requires(postun):	%{__pear}
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
+BuildRequires:  php-pear(PEAR)
 
 Requires:	php-common >= 5.2
 Requires:	php-pear(PEAR)
@@ -45,45 +44,40 @@ Requires:	php-guzzle-Guzzle < 3.9.0
 Provides:	php-pear(%{pear_name}) = %{version}
 Provides:	php-pear(%{channelname}/%{pear_name}) = %{version}
 
+
 %description
-Amazon Web Services SDK for PHP enables developers to build solutions for 
-Amazon Simple Storage Service (Amazon S3), Amazon Elastic Compute Cloud 
-(Amazon EC2), Amazon SimpleDB, and more.
+The AWS SDK for PHP enables PHP developers to easily work with Amazon Web
+Services and build scalable solutions with Amazon S3, Amazon DynamoDB,
+Amazon Glacier, and more.
 
 %prep
 %setup -q -c
 [ -f package2.xml ] || mv package.xml package2.xml
-
-# fix doc roles
-sed -e '/_samples/s/role="php"/role="doc"/' \
-        -e '/sdk.class.php/s/md5sum="[0-9,a-z]\{32\}"//' \
-        -e '/_docs/s/role="php"/role="doc"/' \
-        -e '/_compatibility_test/s/role="php"/role="doc"/' \
-        -e '/_sql/s/role="php"/role="doc"/' \
-        -e '/LICENSE/s/role="php"/role="doc"/' \
-        -e '/README/s/role="php"/role="doc"/' \
-        package2.xml >%{pear_name}-%{version}/%{name}.xml
-
-#remove aws.phar
-rm %{pear_name}-%{version}/aws.phar
-%build
-# Empty build section, most likely nothing required.
-
-%install
+mv package2.xml %{pear_name}-%{version}/%{name}.xml
 
 cd %{pear_name}-%{version}
+
+
+%build
+cd %{pear_name}-%{version}
+# Empty build section, most likely nothing required.
+
+
+%install
+cd %{pear_name}-%{version}
+rm -rf $RPM_BUILD_ROOT
 %{__pear} install --nodeps --packagingroot $RPM_BUILD_ROOT %{name}.xml
 
 # Clean up unnecessary files
-%if 0%{?rhel}
-rm -rf $RPM_BUILD_ROOT%{pear_phpdir}/.??*
-%else
 rm -rf $RPM_BUILD_ROOT%{pear_metadir}/.??*
-%endif
 
 # Install XML package description
 mkdir -p $RPM_BUILD_ROOT%{pear_xmldir}
 install -pm 644 %{name}.xml $RPM_BUILD_ROOT%{pear_xmldir}
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 
 %post
@@ -93,18 +87,19 @@ install -pm 644 %{name}.xml $RPM_BUILD_ROOT%{pear_xmldir}
 %postun
 if [ $1 -eq 0 ] ; then
     %{__pear} uninstall --nodeps --ignore-errors --register-only \
-	%{pear_name} >/dev/null || :
+        pear.amazonwebservices.com/%{pear_name} >/dev/null || :
 fi
 
 
 %files
 %{pear_xmldir}/%{name}.xml
+# Expand this as needed to avoid owning dirs owned by our dependencies
+# and to avoid unowned dirs
 %{pear_phpdir}/AWSSDKforPHP/
 
-
 %changelog
-* Thu Jan 02 2014 Joseph Marrero <jmarrero@fedoraproject.org> - 2.4.12-1
-- downgrade to latest 2.4.x upstream release while getting 2.5.0 fixed
+* Thu Jan 02 2014 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.0-3
+- Fix file installation
 * Mon Dec 30 2013 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.0-2
 - add php-Monolog-dynamo dependency
 - update naming on dependency php-symfony-yaml

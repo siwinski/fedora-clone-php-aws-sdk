@@ -3,8 +3,8 @@
 %global channelname pear.amazonwebservices.com
 
 Name:		php-aws-sdk
-Version:	2.5.0
-Release:	5%{?dist}
+Version:	2.5.2
+Release:	1%{?dist}
 Summary:	Amazon Web Services framework for PHP
 
 License:	ASL 2.0
@@ -102,6 +102,8 @@ fi
 
 
 %changelog
+* Fri Feb 21 2014 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.2-1
+- Update to latest upstream release
 * Fri Jan 03 2014 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.0-5
 - Remove the aws.phar with other uneaded files on %%install
 * Fri Jan 03 2014 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.0-4

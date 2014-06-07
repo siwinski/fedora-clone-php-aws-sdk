@@ -4,7 +4,7 @@
 
 Name:		php-aws-sdk
 Version:	2.6.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Amazon Web Services framework for PHP
 
 License:	ASL 2.0
@@ -102,6 +102,9 @@ fi
 
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.6.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Sun May 04 2014 Joseph Marrero <jmarrero@fedoraproject.org> - 2.6.1-1
 - Update to latest upstream release
 * Sun Mar 16 2014 Joseph Marrero <jmarrero@fedoraproject.org> - 2.5.3-1

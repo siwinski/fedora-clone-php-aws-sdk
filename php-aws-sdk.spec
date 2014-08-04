@@ -4,7 +4,7 @@
 
 Name:		php-aws-sdk
 Version:	2.6.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Amazon Web Services framework for PHP
 
 License:	ASL 2.0
@@ -41,7 +41,7 @@ Requires:	php-Monolog
 Requires:	php-Monolog-dynamo
 Requires:	php-symfony-yaml
 Requires:	php-guzzle-Guzzle >= 3.7.0
-Requires:	php-guzzle-Guzzle < 3.9.0
+Requires:	php-guzzle-Guzzle < 3.9.9
 Provides:	php-pear(%{pear_name}) = %{version}
 Provides:	php-pear(%{channelname}/%{pear_name}) = %{version}
 
@@ -102,6 +102,9 @@ fi
 
 
 %changelog
+* Mon Aug 04 2014 Shawn Iwinski <shawn.iwinski@gmail.com> - 2.6.1-3
+- Fix php-guzzle-Guzzle max version (3.9.0 => 3.9.9)
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.6.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
